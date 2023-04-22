@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>House Price  Prediction</title>
+    <link rel="stylesheet" href="./HP_Form.css">
+  </head>
+  <style >
+    input[type=text],[type=date],[type=range],[type=number], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  input[type=submit] {
+    width: 100%;
+    background-color: #23aec6;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  input[type=submit]:hover {
+    background-color: #dfb23f;
+  }
+  label{
+      font-size: 20px;
+      color:  rgb(7, 7, 7);
+      width: 250px;
+      font-weight: bold;
+  }
+  div {
+    border-radius: 5px;
+    background-color: #f0eaea;
+    padding: 20px;
+    width: 50%;
+    position: relative;
+    left: 25%;
+    opacity: 0.8;
+  }
+  #or{
+    padding: 10px;
+    margin: 20px;
+    text-align: center;
+  }
+  h1{
+      font-size: 50px !important;
+      text-align: center;
+  }
+  p{
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+  }
+  body{
+    background-image: url(https://fornerlavoy.com/wp-content/uploads/2013/01/BofD.Front_.02.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  #value{
+    font-size: 20px;
+    color: #15373d;
+    font-weight: bold;
+  }
+  </style>
+<body>
+
+<h1  style="color:white;">My Broker</h1>
+<p style="color:white;">Enter the details of your house below to get a prediction of its price:</p>
+<div>
+  <form action= "{{url_for("predict")}}" target="_blank" method = "post">
+    <label for="farea">Area</label>
+    <select name="area" id="area">
+      {% for area_type in area_types %}
+          <option value = "{{area_type}}">{{area_type}}</option>>
+          {% endfor %}
+  </select>
+    <label for="availability">Availability</label>
+    <select name="availability" id="availability">
+      <option value="0">Availability Status</option>
+      <option value="1">Planning</option>
+      <option value="2">Ready to Move</option>
+  </select><br>
+  <div id="or">OR</div>
+  <input type="date" name="availability" id="availability_2" value="Select Date">
+  <label for="location">Location</label>
+        <select name="location" id="location" required="1">
+          {% for location in locations %}
+          <option value = "{{location}}">{{location}}</option>>
+          {% endfor %}
+           
+        </select>
+          
+    <label for="size">Size (in BHK)</label>
+    <select name="size" id="size">
+      <option value="0"> 1 </option>
+            <option value="1"> 2 </option>
+            <option value="2"> 3 </option>
+        
+    </select>
+    <label for="society">Society</label>
+        <select name="society" id="society">
+            <option value="0">Select Society </option>
+            <option value="1">Prestige Sunrise Park</option>
+            <option value="2">Purvankara Westend</option>
+            <option value="3">Prestige Song of the South</option>
+            <option value="4">Mahaveer Rich</option>
+            <option value="5">Brigade Woods</option>
+        </select>
+        <label for="total_sqrft" name = "total_sqrft">Total Square Feet from ( 0 to 8000) : </label>
+        <span id="value"></span>
+        <input type="range" id="vol" name="vol" min="1" max="8000" onchange="showValue(this.value)">
+        <label for="bathrooms">Number of Bathrooms:</label>
+        <select name="bath" id="bath">
+         <option value="0"> 1 </option>
+            <option value="1"> 2 </option>
+            <option value="2"> 3 </option>
+      
+        </select>
+       <!--  <input type="number" id="bathrooms" name="bathrooms" placeholder="1"><br> -->
+        <label for="balcony" name="balcony">Number of Balcony:</label>
+        <input type="number" id="balcony" name="balcony" placeholder="1"><br>
+    <input type="submit" value="Predict" onclick="send_data()">
+  </form>
+  <div class="col-nd-12" style="text-align: center;">
+    <h3><span id= "prediction"></span></h3>
+  </div>
+</div>
+
+<script > 
+function form_handler(event){
+  event.preventDefault();
+ }
+
+ function send_data(){
+  document.querySelector('form').addEventListener("submit",form_handler);
+
+  var fd = new FormData(document.querySelector('form'));
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST','/predict',true);
+
+  document.getElementById("prediction").innerHTML = "Wait for prediction...";
+  ﻿xhr.onreadystatechange = function(){ 
+    if(xhr.readyState == XMLHttpRequest.DONE) { 
+       document.getElementById('prediction').innerHTML="Prediction: ₹ " + xhr.responseText + " L" ; 
+    }
+    }; 
+    xhr.onload = function(){}; 
+    xhr.send(fd);
+
+
+ }
+
+ function showValue(x)
+{
+ document.getElementById("value").innerHTML=x;
+}
+
+</script>
+</body>
+</html>
